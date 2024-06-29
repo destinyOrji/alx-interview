@@ -1,25 +1,28 @@
 #!/usr/bin/python3
-""" Module for 0-minoperations"""
+"""
+UTF-8 Validation
+"""
 
 
-def minOperations(n):
+def validUTF8(data) -> bool:
     """
-    minOperations
-    Gets fewest # of operations needed to result in exactly n H characters
+    Returns True if data is a valid UTF-8 encoding, else return False
+    :param data:
+    :return:
     """
-    # all outputs should be at least 2 char: (min, Copy All => Paste)
-    if (n < 2):
-        return 0
-    ops, root = 0, 2
-    while root <= n:
-        # if n evenly divides by root
-        if n % root == 0:
-            # total even-divisions by root = total operations
-            ops += root
-            # set n to the remainder
-            n = n / root
-            # reduce root to find remaining smaller vals that evenly-divide n
-            root -= 1
-        # increment root until it evenly-divides n
-        root += 1
-    return ops
+    num_bytes = 0
+    for byte in data:
+        mask = 1 << 7
+        if not num_bytes:
+            while byte & mask:
+                num_bytes += 1
+                mask >>= 1
+            if not num_bytes:
+                continue
+            if num_bytes == 1 or num_bytes > 4:
+                return False
+        else:
+            if byte >> 6 != 0b10:
+                return False
+        num_bytes -= 1
+    return num_bytes == 0
