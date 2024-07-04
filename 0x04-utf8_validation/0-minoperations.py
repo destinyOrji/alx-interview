@@ -10,19 +10,30 @@ def validUTF8(data) -> bool:
     :param data:
     :return:
     """
-    num_bytes = 0
-    for byte in data:
-        mask = 1 << 7
-        if not num_bytes:
-            while byte & mask:
-                num_bytes += 1
+    for num in data:
+        # Get the 8 least significant bits of the byte
+        byte = num & 0xFF
+        
+        if n_bytes == 0:
+            # Count the number of leading 1s
+            mask = 1 << 7
+            while mask & byte:
+                n_bytes += 1
                 mask >>= 1
-            if not num_bytes:
+            
+            # 1-byte characters
+            if n_bytes == 0:
                 continue
-            if num_bytes == 1 or num_bytes > 4:
+            
+            # If n_bytes is more than 4 or 1, it's not valid
+            if n_bytes == 1 or n_bytes > 4:
                 return False
         else:
-            if byte >> 6 != 0b10:
+            # Check if the byte is of the form 10xxxxxx
+            if not (byte & mask1 and not (byte & mask2)):
                 return False
-        num_bytes -= 1
-    return num_bytes == 0
+        
+        n_bytes -= 1
+
+    # If there are still bytes expected for the current character, return False
+    return n_bytes == 0
