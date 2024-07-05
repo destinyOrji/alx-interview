@@ -2,36 +2,43 @@
 """ N queens """
 import sys
 
-# Ensure correct number of arguments
-if len(sys.argv) != 2:
+
+if len(sys.argv) > 2 or len(sys.argv) < 2:
     print("Usage: nqueens N")
     exit(1)
 
-# Ensure the argument is a digit
 if not sys.argv[1].isdigit():
     print("N must be a number")
     exit(1)
 
-n = int(sys.argv[1])
-
-# Ensure N is at least 4
-if n < 4:
+if int(sys.argv[1]) < 4:
     print("N must be at least 4")
     exit(1)
 
-def queens(n, row=0, columns=[], diagonals1=[], diagonals2=[]):
-    """ Generate all valid solutions for the n-queens problem """
-    if row == n:
-        yield columns
+n = int(sys.argv[1])
+
+
+def queens(n, i=0, a=[], b=[], c=[]):
+    """ find possible positions """
+    if i < n:
+        for j in range(n):
+            if j not in a and i + j not in b and i - j not in c:
+                yield from queens(n, i + 1, a + [j], b + [i + j], c + [i - j])
     else:
-        for col in range(n):
-            if col not in columns and row + col not in diagonals1 and row - col not in diagonals2:
-                yield from queens(n, row + 1, columns + [col], diagonals1 + [row + col], diagonals2 + [row - col])
+        yield a
+
 
 def solve(n):
-    """ Solve the n-queens problem and print each solution """
-    for solution in queens(n):
-        print([[i, solution[i]] for i in range(n)])
+    """ solve """
+    k = []
+    i = 0
+    for solution in queens(n, 0):
+        for s in solution:
+            k.append([i, s])
+            i += 1
+        print(k)
+        k = []
+        i = 0
+
 
 solve(n)
-
