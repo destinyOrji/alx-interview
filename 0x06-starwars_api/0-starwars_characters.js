@@ -1,4 +1,3 @@
-
 #!/usr/bin/node
 
 const request = require('request');
@@ -16,4 +15,3 @@ const exactOrder = (actors, x) => {
     exactOrder(actors, x + 1);
   });
 };
-
